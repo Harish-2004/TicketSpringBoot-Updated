@@ -12,4 +12,10 @@ JAVA_OPTS = "-Xmx512m -Xms256m"
 PORT = "8080"
 
 [phases.setup]
-nixPkgs = ["jdk21"] 
+nixPkgs = ["jdk21", "maven"]
+
+[phases.install]
+cmds = ["mvn dependency:go-offline"]
+
+[phases.build]
+cmds = ["mvn clean package -DskipTests"] 

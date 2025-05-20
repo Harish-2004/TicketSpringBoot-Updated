@@ -1,9 +1,11 @@
-FROM eclipse-temurin:17-jdk-alpine
+FROM maven:3.9-eclipse-temurin-17-alpine AS build
 WORKDIR /app
-COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
-RUN ./mvnw dependency:go-offline
+COPY pom.xml .
 COPY src ./src
-RUN ./mvnw package -DskipTests
+RUN mvn clean package -DskipTests
+
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/demoWeb-0.0.1-SNAPSHOT.jar .
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","target/demoWeb-0.0.1-SNAPSHOT.jar"] 
+ENTRYPOINT ["java", "-jar", "demoWeb-0.0.1-SNAPSHOT.jar"] 

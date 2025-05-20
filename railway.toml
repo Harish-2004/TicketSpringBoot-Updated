@@ -3,4 +3,4 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "java -jar target/demoWeb-0.0.1-SNAPSHOT.jar" 
+startCommand = "java -jar app.jar" 

@@ -9,5 +9,4 @@ healthcheckTimeout = 100
 
 [deploy.env]
 JAVA_OPTS = "-Xmx512m -Xms256m"
-PORT = "8080"
-RAILWAY_STATIC_URL = "https://demoWeb-production.up.railway.app" 
+PORT = "8080" 

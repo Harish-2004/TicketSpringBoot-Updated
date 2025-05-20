@@ -29,7 +29,7 @@ A Spring Boot application for managing railway ticket bookings with station mana
 
 1. Clone the repository:
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/Harish-2004/TicketSpringBoot-Updated.git
 cd demoWeb-SpringBoot
 ```
 
@@ -148,4 +148,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Support
 
-For support, please open an issue in the GitHub repository. 
+For support, please open an issue in the GitHub repository.

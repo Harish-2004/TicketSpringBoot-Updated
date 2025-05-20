@@ -6,9 +6,7 @@ dockerfilePath = "Dockerfile"
 startCommand = "java -jar app.jar"
 
 [deploy.env]
-PGHOST = "${PGHOST}"
-PGPORT = "${PGPORT}"
-PGDATABASE = "${PGDATABASE}"
+DATABASE_URL = "${DATABASE_URL}"
 PGUSER = "${PGUSER}"
 PGPASSWORD = "${PGPASSWORD}"
 SPRING_PROFILES_ACTIVE = "prod" 

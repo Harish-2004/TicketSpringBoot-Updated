@@ -3,4 +3,11 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "java -jar app.jar" 
+startCommand = "java -jar app.jar"
+
+[deploy.env]
+PGHOST = "${PGHOST}"
+PGPORT = "${PGPORT}"
+PGDATABASE = "${PGDATABASE}"
+PGUSER = "${PGUSER}"
+PGPASSWORD = "${PGPASSWORD}" 

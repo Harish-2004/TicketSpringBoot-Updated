@@ -1,6 +1,6 @@
 [build]
 builder = "nixpacks"
-buildCommand = "chmod +x mvnw && ./mvnw clean package -DskipTests"
+buildCommand = "mvn -v && mvn clean package -DskipTests"
 
 [deploy]
 startCommand = "java -jar target/demoWeb-0.0.1-SNAPSHOT.jar"
@@ -9,4 +9,7 @@ healthcheckTimeout = 100
 
 [deploy.env]
 JAVA_OPTS = "-Xmx512m -Xms256m"
-PORT = "8080" 
+PORT = "8080"
+
+[phases.setup]
+nixPkgs = ["maven", "jdk17"] 

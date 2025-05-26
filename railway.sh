@@ -4,16 +4,28 @@
 echo "Waiting for PostgreSQL to be ready..."
 sleep 30
 
-# Set default values if not provided
-export PGHOST=${PGHOST:-postgres.railway.internal}
-export PGPORT=${PGPORT:-5432}
-export PGUSER=${PGUSER:-postgres}
-export PGDATABASE=${PGDATABASE:-railway}
+# Parse DATABASE_URL to get connection details
+if [ -n "$DATABASE_URL" ]; then
+    # Extract host, port, database, user, and password from DATABASE_URL
+    DB_HOST=$(echo $DATABASE_URL | sed -n 's/.*@\([^:]*\).*/\1/p')
+    DB_PORT=$(echo $DATABASE_URL | sed -n 's/.*:\([0-9]*\)\/.*/\1/p')
+    DB_NAME=$(echo $DATABASE_URL | sed -n 's/.*\/\([^?]*\).*/\1/p')
+    DB_USER=$(echo $DATABASE_URL | sed -n 's/.*:\/\/\([^:]*\):.*/\1/p')
+    DB_PASS=$(echo $DATABASE_URL | sed -n 's/.*:\/\/[^:]*:\([^@]*\)@.*/\1/p')
+else
+    echo "Error: DATABASE_URL is not set"
+    exit 1
+fi
+
+# Set environment variables
+export PGHOST=$DB_HOST
+export PGPORT=$DB_PORT
+export PGUSER=$DB_USER
+export PGDATABASE=$DB_NAME
+export PGPASSWORD=$DB_PASS
 
 # Enable PostgreSQL client logging
 export PGSSLMODE=require
-export PGSSLCERT=/etc/ssl/certs/ca-certificates.crt
-export PGSSLROOTCERT=/etc/ssl/certs/ca-certificates.crt
 
 # Debug: Print environment variables (masking sensitive data)
 echo "Environment variables:"
@@ -24,19 +36,7 @@ echo "PGDATABASE: $PGDATABASE"
 echo "DATABASE_URL: ${DATABASE_URL:+set}"
 echo "PGSSLMODE: $PGSSLMODE"
 
-# Try to ping the host first
-echo "Testing host connectivity..."
-if ping -c 1 $PGHOST > /dev/null 2>&1; then
-    echo "Host is reachable"
-else
-    echo "Warning: Cannot ping host $PGHOST"
-fi
-
-# Test DNS resolution
-echo "Testing DNS resolution..."
-nslookup $PGHOST
-
-# Construct connection string with all possible parameters
+# Construct connection string
 CONN_STRING="host=$PGHOST port=$PGPORT dbname=$PGDATABASE user=$PGUSER sslmode=require connect_timeout=10"
 
 echo "Using connection string: $CONN_STRING"
@@ -78,7 +78,7 @@ echo "Using PORT: ${PORT:-8080}"
 # Add debug logging for database connection
 exec java -Xms512m -Xmx1024m \
      -Dspring.profiles.active=cloud \
-     -Dspring.datasource.url="$DATABASE_URL?sslmode=require" \
+     -Dspring.datasource.url="$DATABASE_URL" \
      -Dspring.datasource.username="$PGUSER" \
      -Dspring.datasource.password="$PGPASSWORD" \
      -Dserver.port="${PORT:-8080}" \

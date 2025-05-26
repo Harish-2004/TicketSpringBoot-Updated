@@ -20,7 +20,7 @@ fi
 
 # Wait for PostgreSQL to be ready
 echo "Waiting for PostgreSQL to be ready..."
-sleep 30
+sleep 10  # Reduced initial wait time
 
 # Check if DATABASE_URL is set
 if [ -z "$DATABASE_URL" ]; then
@@ -63,7 +63,7 @@ fi
 
 # Check if we can connect to the database
 echo "Checking database connection..."
-max_attempts=30
+max_attempts=10  # Reduced number of attempts
 attempt=1
 
 while [ $attempt -le $max_attempts ]; do
@@ -104,7 +104,7 @@ while [ $attempt -le $max_attempts ]; do
     fi
     
     echo "PostgreSQL is unavailable - sleeping..."
-    sleep 5
+    sleep 2  # Reduced sleep time
     attempt=$((attempt + 1))
 done
 

@@ -88,6 +88,8 @@ while [ $attempt -le $max_attempts ]; do
             
             if [ $? -eq 0 ]; then
                 echo "Database schema initialized successfully"
+                # Verify the tables were created
+                PGPASSWORD=$PGPASSWORD psql "host=$DB_HOST port=$DB_PORT dbname=$DB_NAME user=$DB_USER sslmode=require" -c "\dt"
             else
                 echo "Warning: Database schema initialization had some issues"
             fi

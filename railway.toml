@@ -6,7 +6,7 @@ dockerfilePath = "Dockerfile"
 startCommand = "./railway.sh"
 
 [deploy.env]
-# Database connection
+# Database connection - Using Railway's internal network
 DATABASE_URL = "postgresql://postgres:idLjPfQxfiurxHKZBhNoNFibjYVHvQFt@postgres.railway.internal:5432/railway"
 PGUSER = "postgres"
 PGPASSWORD = "idLjPfQxfiurxHKZBhNoNFibjYVHvQFt"

@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Exit on error
+set -e
+
 # Wait for PostgreSQL to be ready
 echo "Waiting for PostgreSQL to be ready..."
 sleep 5
@@ -43,10 +46,16 @@ if [ $attempt -gt $max_attempts ]; then
     echo "Could not connect to PostgreSQL after $max_attempts attempts. Starting application anyway..."
 fi
 
-# Start the application
+# Start the application with proper error handling
 echo "Starting Spring Boot application..."
-exec java -Xms256m -Xmx512m \
-     -Dspring.profiles.active=cloud \
-     -Dspring.datasource.url="$DATABASE_URL" \
-     -Dserver.port="${PORT:-8080}" \
-     -jar app.jar 
+exec java \
+    -Dspring.profiles.active=cloud \
+    -Dspring.datasource.url="$DATABASE_URL" \
+    -Dserver.port="${PORT:-8080}" \
+    -Dlogging.level.org.springframework=INFO \
+    -Dlogging.level.org.hibernate=INFO \
+    -Dlogging.level.com.zaxxer.hikari=INFO \
+    -Dlogging.level.org.postgresql=INFO \
+    -Dspring.main.banner-mode=log \
+    -Dspring.main.log-startup-info=true \
+    -jar app.jar 

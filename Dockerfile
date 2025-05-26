@@ -7,6 +7,10 @@ RUN ls -la target/
 
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
+
+# Install PostgreSQL client
+RUN apk add --no-cache postgresql-client
+
 COPY --from=build /app/target/*.jar app.jar
 COPY railway.sh .
 RUN chmod +x railway.sh

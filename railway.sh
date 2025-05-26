@@ -6,12 +6,23 @@ sleep 30
 
 # Check if we can connect to the database
 echo "Checking database connection..."
-until PGPASSWORD=$PGPASSWORD psql -h $PGHOST -U $PGUSER -d $PGDATABASE -c '\q'; do
-  echo "PostgreSQL is unavailable - sleeping"
-  sleep 5
+max_attempts=30
+attempt=1
+
+while [ $attempt -le $max_attempts ]; do
+    if PGPASSWORD=$PGPASSWORD psql -h $PGHOST -U $PGUSER -d $PGDATABASE -c '\q' 2>/dev/null; then
+        echo "PostgreSQL is up - executing command"
+        break
+    fi
+    
+    echo "PostgreSQL is unavailable - sleeping (attempt $attempt of $max_attempts)"
+    sleep 5
+    attempt=$((attempt + 1))
 done
 
-echo "PostgreSQL is up - executing command"
+if [ $attempt -gt $max_attempts ]; then
+    echo "Could not connect to PostgreSQL after $max_attempts attempts. Starting application anyway..."
+fi
 
 # Run the application with proper JVM options
 echo "Starting Spring Boot application..."

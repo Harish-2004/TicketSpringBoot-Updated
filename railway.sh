@@ -76,6 +76,14 @@ while [ $attempt -le $max_attempts ]; do
         # Initialize database schema if SQL file exists
         if [ -f "$SQL_FILE" ]; then
             echo "Initializing database schema from $SQL_FILE..."
+            # Drop existing tables if they exist
+            PGPASSWORD=$PGPASSWORD psql "host=$DB_HOST port=$DB_PORT dbname=$DB_NAME user=$DB_USER sslmode=require" -c "
+                DROP TABLE IF EXISTS passengerbooking CASCADE;
+                DROP TABLE IF EXISTS supplementpassengers CASCADE;
+                DROP TABLE IF EXISTS train CASCADE;
+                DROP TABLE IF EXISTS login CASCADE;
+            "
+            # Run the initialization script
             PGPASSWORD=$PGPASSWORD psql "host=$DB_HOST port=$DB_PORT dbname=$DB_NAME user=$DB_USER sslmode=require" -f "$SQL_FILE"
             
             if [ $? -eq 0 ]; then

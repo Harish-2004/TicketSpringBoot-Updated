@@ -120,7 +120,7 @@ echo "Starting Spring Boot application..."
 echo "Using DATABASE_URL: $MASKED_URL"
 echo "Using PORT: ${PORT:-8080}"
 
-# Add debug logging for database connection
+# Add debug logging for database connection and startup
 exec java -Xms512m -Xmx1024m \
      -Dspring.profiles.active=cloud \
      -Dspring.datasource.url="$DATABASE_URL" \
@@ -130,4 +130,6 @@ exec java -Xms512m -Xmx1024m \
      -Dlogging.level.org.hibernate=INFO \
      -Dlogging.level.org.springframework=INFO \
      -Dlogging.level.org.springframework.jdbc=INFO \
+     -Dlogging.level.org.springframework.boot.web.embedded.tomcat=INFO \
+     -Dlogging.level.org.springframework.boot.actuate=INFO \
      -jar app.jar 

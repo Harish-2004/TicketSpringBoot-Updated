@@ -1,5 +1,23 @@
 #!/bin/sh
 
+# Create a lock file to prevent multiple executions
+LOCK_FILE="/app/.init_lock"
+if [ -f "$LOCK_FILE" ]; then
+    echo "Initialization already completed, skipping..."
+    # Just start the application
+    exec java -Xms512m -Xmx1024m \
+         -Dspring.profiles.active=cloud \
+         -Dspring.datasource.url="$DATABASE_URL" \
+         -Dserver.port="${PORT:-8080}" \
+         -Dlogging.level.org.postgresql=INFO \
+         -Dlogging.level.com.zaxxer.hikari=INFO \
+         -Dlogging.level.org.hibernate=INFO \
+         -Dlogging.level.org.springframework=INFO \
+         -Dlogging.level.org.springframework.jdbc=INFO \
+         -jar app.jar
+    exit 0
+fi
+
 # Wait for PostgreSQL to be ready
 echo "Waiting for PostgreSQL to be ready..."
 sleep 30
@@ -83,6 +101,9 @@ done
 if [ $attempt -gt $max_attempts ]; then
     echo "Could not connect to PostgreSQL after $max_attempts attempts. Starting application anyway..."
 fi
+
+# Create lock file to indicate initialization is complete
+touch "$LOCK_FILE"
 
 # Run the application with proper JVM options
 echo "Starting Spring Boot application..."

@@ -1,28 +1,31 @@
 package com.example.demoWeb.model;
 import org.springframework.stereotype.Component;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 
 @Component
 @Entity
 @Table(name="train")
 public class StationAssign {
     @Id
-    private String stations;
+    @Column(name = "station")
+    private String station;
+    
+    @Column(name = "value")
     private int value;
 
     public StationAssign() {
     }
 
     public StationAssign(String station, int value) {
-        this.stations = station;
+        this.station = station;
         this.value = value;
     }
 
     public void assignStation(String station) {
-        this.stations = station;
+        this.station = station;
     }
 
     public void giveValue(int value) {
@@ -31,16 +34,16 @@ public class StationAssign {
 
     @Override
     public String toString() {
-        return stations + " " + value;
+        return station + " " + value;
     }
 
     // Getters and Setters
     public String getStation() {
-        return stations;
+        return station;
     }
 
     public void setStation(String station) {
-        this.stations = station;
+        this.station = station;
     }
 
     public int getValue() {

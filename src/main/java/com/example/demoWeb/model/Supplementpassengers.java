@@ -5,6 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.CascadeType;
 import java.util.Objects;
 
 @Entity
@@ -16,8 +17,8 @@ public class Supplementpassengers {
 
     private String intermediateStation;
 
-    @OneToOne
-    @JoinColumn(name = "email", referencedColumnName = "email", insertable = false, updatable = false)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "passenger_email", referencedColumnName = "email")
     private Passengerdetails passenger;
 
     // Default constructor
@@ -46,11 +47,11 @@ public class Supplementpassengers {
         this.intermediateStation = intermediateStation;
     }
 
-    public  Passengerdetails getPassenger() {
+    public Passengerdetails getPassenger() {
         return passenger;
     }
 
-    public void setPassenger( Passengerdetails passenger) {
+    public void setPassenger(Passengerdetails passenger) {
         this.passenger = passenger;
     }
 

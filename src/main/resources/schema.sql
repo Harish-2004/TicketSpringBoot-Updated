@@ -30,10 +30,10 @@ CREATE TABLE IF NOT EXISTS supplementpassengers (
 );
 
 -- Insert some sample stations
-INSERT INTO train (stations, value) VALUES
+INSERT INTO train (station, value) VALUES
     ('Station A', 1),
     ('Station B', 2),
     ('Station C', 3),
     ('Station D', 4),
     ('Station E', 5)
-ON CONFLICT (stations) DO NOTHING; 
+ON CONFLICT (station) DO NOTHING; 

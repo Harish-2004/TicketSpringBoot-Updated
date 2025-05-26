@@ -8,6 +8,8 @@ RUN ls -la target/
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
+COPY railway.sh .
+RUN chmod +x railway.sh
 
 # Add healthcheck
 HEALTHCHECK --interval=30s --timeout=3s \
@@ -17,4 +19,4 @@ HEALTHCHECK --interval=30s --timeout=3s \
 ENV JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError"
 
 EXPOSE 8080
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"] 
+ENTRYPOINT ["./railway.sh"] 

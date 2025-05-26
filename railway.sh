@@ -45,6 +45,17 @@ while [ $attempt -le $max_attempts ]; do
     # Try connection using the actual hostname from DATABASE_URL
     if PGPASSWORD=$PGPASSWORD psql "host=$DB_HOST port=$DB_PORT dbname=$DB_NAME user=$DB_USER sslmode=require" -c '\q' 2>&1; then
         echo "Successfully connected to PostgreSQL!"
+        
+        # Initialize database schema
+        echo "Initializing database schema..."
+        PGPASSWORD=$PGPASSWORD psql "host=$DB_HOST port=$DB_PORT dbname=$DB_NAME user=$DB_USER sslmode=require" -f /app/railway-setup.sql
+        
+        if [ $? -eq 0 ]; then
+            echo "Database schema initialized successfully"
+        else
+            echo "Warning: Database schema initialization had some issues"
+        fi
+        
         break
     else
         echo "Connection failed. Error details:"
@@ -70,9 +81,9 @@ exec java -Xms512m -Xmx1024m \
      -Dspring.profiles.active=cloud \
      -Dspring.datasource.url="$DATABASE_URL" \
      -Dserver.port="${PORT:-8080}" \
-     -Dlogging.level.org.postgresql=DEBUG \
-     -Dlogging.level.com.zaxxer.hikari=DEBUG \
-     -Dlogging.level.org.hibernate=DEBUG \
-     -Dlogging.level.org.springframework=DEBUG \
-     -Dlogging.level.org.springframework.jdbc=DEBUG \
+     -Dlogging.level.org.postgresql=INFO \
+     -Dlogging.level.com.zaxxer.hikari=INFO \
+     -Dlogging.level.org.hibernate=INFO \
+     -Dlogging.level.org.springframework=INFO \
+     -Dlogging.level.org.springframework.jdbc=INFO \
      -jar app.jar 

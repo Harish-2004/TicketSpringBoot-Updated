@@ -34,6 +34,15 @@ echo "Port: $DB_PORT"
 echo "Database: $DB_NAME"
 echo "User: $DB_USER"
 
+# Check if SQL file exists
+SQL_FILE="/app/railway-setup.sql"
+if [ ! -f "$SQL_FILE" ]; then
+    echo "Warning: SQL file not found at $SQL_FILE"
+    echo "Current directory contents:"
+    ls -la /app/
+    echo "Falling back to classpath SQL initialization"
+fi
+
 # Check if we can connect to the database
 echo "Checking database connection..."
 max_attempts=30
@@ -46,14 +55,18 @@ while [ $attempt -le $max_attempts ]; do
     if PGPASSWORD=$PGPASSWORD psql "host=$DB_HOST port=$DB_PORT dbname=$DB_NAME user=$DB_USER sslmode=require" -c '\q' 2>&1; then
         echo "Successfully connected to PostgreSQL!"
         
-        # Initialize database schema
-        echo "Initializing database schema..."
-        PGPASSWORD=$PGPASSWORD psql "host=$DB_HOST port=$DB_PORT dbname=$DB_NAME user=$DB_USER sslmode=require" -f /app/railway-setup.sql
-        
-        if [ $? -eq 0 ]; then
-            echo "Database schema initialized successfully"
+        # Initialize database schema if SQL file exists
+        if [ -f "$SQL_FILE" ]; then
+            echo "Initializing database schema from $SQL_FILE..."
+            PGPASSWORD=$PGPASSWORD psql "host=$DB_HOST port=$DB_PORT dbname=$DB_NAME user=$DB_USER sslmode=require" -f "$SQL_FILE"
+            
+            if [ $? -eq 0 ]; then
+                echo "Database schema initialized successfully"
+            else
+                echo "Warning: Database schema initialization had some issues"
+            fi
         else
-            echo "Warning: Database schema initialization had some issues"
+            echo "Skipping direct SQL initialization, will use Spring Boot's initialization"
         fi
         
         break

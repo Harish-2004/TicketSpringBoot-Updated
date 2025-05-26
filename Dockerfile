@@ -11,8 +11,10 @@ WORKDIR /app
 # Install PostgreSQL client
 RUN apk add --no-cache postgresql-client
 
+# Copy application files
 COPY --from=build /app/target/*.jar app.jar
 COPY railway.sh .
+COPY railway-setup.sql .
 RUN chmod +x railway.sh
 
 # Add healthcheck

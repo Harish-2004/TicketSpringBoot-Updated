@@ -1,28 +1,14 @@
-FROM maven:3.9-eclipse-temurin-17-alpine AS build
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package -DskipTests
-RUN ls -la target/
-
+# Use an official OpenJDK 17 image
 FROM eclipse-temurin:17-jre-alpine
+
+# Set the working directory
 WORKDIR /app
 
-# Install PostgreSQL client
-RUN apk add --no-cache postgresql-client
+# Copy the built jar file (update the name if needed)
+COPY target/demoWeb-0.0.1-SNAPSHOT.jar app.jar
 
-# Copy application files
-COPY --from=build /app/target/*.jar app.jar
-COPY railway.sh .
-COPY railway-setup.sql .
-RUN chmod +x railway.sh
-
-# Add healthcheck
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
-
-# Set environment variables
-ENV JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError"
-
+# Expose the port your app runs on (default Spring Boot port is 8080)
 EXPOSE 8080
-ENTRYPOINT ["./railway.sh"] 
+ENV SPRING_PROFILES_ACTIVE=cloud
+# Run the jar file
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -72,9 +72,12 @@ public class TicketService {
 
     public boolean login(String email, String password) {
         // JDBC template approach
+        //System.out.println("IN the last Email: " + email);
+        //System.out.println("IN the last Password: " + password);
         String query = "SELECT password FROM login WHERE emailid = ?";
         @SuppressWarnings("deprecation")
         List<String> passwords = jdbcTemplate.query(query, new Object[]{email}, (rs, rowNum) -> rs.getString("password"));
+        //System.out.println("Passwords list: " + passwords);
         if (passwords.isEmpty()) {
             return false;
         }

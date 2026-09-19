@@ -2,6 +2,67 @@
 
 A Spring Boot application for managing railway ticket bookings with station management and passenger tracking.
 
+## Architecture Diagram
+
+```mermaid
+flowchart TD
+    subgraph Client ["Client Layer"]
+        UI["Web Browser (Thymeleaf UI)"]
+    end
+
+    subgraph SpringBoot ["Spring Boot Application (com.ticket)"]
+        subgraph Controller ["Controller Layer"]
+            HC["HomeController (/booking, /login)"]
+        end
+
+        subgraph ProducerService ["Event Producer"]
+            BPS["BookingProducerService"]
+        end
+
+        subgraph ConsumerService ["Async Consumer Layer"]
+            BCS["BookingConsumerService (@KafkaListener)"]
+        end
+
+        subgraph DomainServices ["Service & Domain Logic"]
+            TS["TicketService"]
+            PS["PassengerService"]
+            AV["AssignValues (Intermediate Station Calculator)"]
+        end
+
+        subgraph Repositories ["Repository Layer (Spring Data JPA)"]
+            PR["PassengerRepository"]
+            SDR["StationDetailsRepository"]
+            SPR["SupplementPassengerRepository"]
+        end
+    end
+
+    subgraph Messaging ["Message Broker (Kafka Infrastructure)"]
+        ZK["Apache Zookeeper (Port 2181)"]
+        KB["Apache Kafka Broker (Port 9092)"]
+        KT["Kafka Topic: ticket-booking-events (3 Partitions)"]
+        ZK --- KB
+        KB --- KT
+    end
+
+    subgraph Persistence ["Persistence Layer"]
+        PG[("PostgreSQL Database (Port 5432)")]
+        PGA["pgAdmin 4 Web Console (Port 5050)"]
+        PGA -. "Manage/Inspect" .-> PG
+    end
+
+    %% Flow connections
+    UI -- "1. POST /booking (Ticket Form)" --> HC
+    HC -- "2. Dispatch DTO Payload" --> BPS
+    BPS -- "3. Publish Event (Key: Email)" --> KT
+    HC -. "4. Return 202 Queued Response" .-> UI
+
+    KT -- "5. Consume Event Stream" --> BCS
+    BCS -- "6. Delegate Processing" --> TS
+    TS -- "7. Calculate Nearest Station" --> AV
+    TS -- "8. Persist Passenger & Supplement Details" --> Repositories
+    Repositories -- "9. SQL Operations" --> PG
+```
+
 ## Features
 
 - User Authentication (Signup/Login)

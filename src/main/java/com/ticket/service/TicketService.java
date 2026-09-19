@@ -12,6 +12,8 @@ import com.ticket.model.PassengerDetails;
 import com.ticket.model.StationAssign;
 import com.ticket.model.SupplementPassengers;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,6 +75,7 @@ public class TicketService {
         return stationDetailsRepository.findAll();
     }
 
+    @Transactional
     public void bookTicket(PassengerDetails pd) {
         long count = countRecords("passengerbooking");
         System.out.println("count=" + count);

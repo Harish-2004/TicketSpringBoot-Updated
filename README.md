@@ -54,6 +54,34 @@ cd demoWeb-SpringBoot
 
 The application will be available at `http://localhost:8080`
 
+## Docker & pgAdmin Setup (One-Command Run)
+
+Run the full stack (PostgreSQL + pgAdmin + Spring Boot App) with a single command:
+
+```bash
+docker compose up --build
+```
+
+### Services & Endpoints:
+
+| Service | Access URL | Credentials / Details |
+| :--- | :--- | :--- |
+| **Spring Boot App** | `http://localhost:8080` | Web application UI |
+| **pgAdmin 4** | `http://localhost:5050` | **Email**: `admin@admin.com`<br>**Password**: `admin` |
+| **PostgreSQL DB** | `localhost:5432` | **Database**: `ticketsystem2`<br>**User**: `postgres` \| **Pass**: `admin` |
+
+#### Connecting pgAdmin to PostgreSQL Database:
+1. Open `http://localhost:5050` and log in.
+2. Click **Add New Server**.
+3. **General** tab: Name = `TicketDB`
+4. **Connection** tab:
+   * **Host name / address**: `db`
+   * **Port**: `5432`
+   * **Maintenance database**: `ticketsystem2`
+   * **Username**: `postgres`
+   * **Password**: `admin`
+
+
 ## Database Schema
 
 The application uses the following tables:
@@ -122,16 +150,15 @@ src/
 ├── main/
 │   ├── java/
 │   │   └── com/
-│   │       └── example/
-│   │           └── demoWeb/
-│   │               ├── Controller/
-│   │               ├── Services/
-│   │               ├── model/
-│   │               └── Repo/
+│   │       └── ticket/
+│   │           ├── controller/
+│   │           ├── service/
+│   │           ├── repository/
+│   │           └── model/
 │   └── resources/
 │       ├── templates/
 │       ├── application.properties
-│       └── schema.sql
+│       └── application-cloud.properties
 ```
 
 ## Contributing

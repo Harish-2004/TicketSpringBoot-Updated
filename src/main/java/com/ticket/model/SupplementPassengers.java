@@ -1,4 +1,4 @@
-package com.example.demoWeb.model;
+package com.ticket.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "supplementpassengers")
-public class Supplementpassengers {
+public class SupplementPassengers {
 
     @Id
     private String email;
@@ -19,13 +19,13 @@ public class Supplementpassengers {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "passenger_email", referencedColumnName = "email")
-    private Passengerdetails passenger;
+    private PassengerDetails passenger;
 
     // Default constructor
-    public Supplementpassengers() {}
+    public SupplementPassengers() {}
 
     // Constructor
-    public Supplementpassengers(String email, String intermediateStation) {
+    public SupplementPassengers(String email, String intermediateStation) {
         this.email = email;
         this.intermediateStation = intermediateStation;
     }
@@ -47,11 +47,11 @@ public class Supplementpassengers {
         this.intermediateStation = intermediateStation;
     }
 
-    public Passengerdetails getPassenger() {
+    public PassengerDetails getPassenger() {
         return passenger;
     }
 
-    public void setPassenger(Passengerdetails passenger) {
+    public void setPassenger(PassengerDetails passenger) {
         this.passenger = passenger;
     }
 
@@ -59,7 +59,7 @@ public class Supplementpassengers {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Supplementpassengers that = (Supplementpassengers) o;
+        SupplementPassengers that = (SupplementPassengers) o;
         return Objects.equals(email, that.email);
     }
 
@@ -70,7 +70,7 @@ public class Supplementpassengers {
 
     @Override
     public String toString() {
-        return "Supplementpassengers{" +
+        return "SupplementPassengers{" +
                 "email='" + email + '\'' +
                 ", intermediateStation='" + intermediateStation + '\'' +
                 '}';

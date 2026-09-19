@@ -1,4 +1,5 @@
-package com.example.demoWeb.model;
+package com.ticket.model;
+
 import org.springframework.stereotype.Component;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -54,4 +55,3 @@ public class StationAssign {
         this.value = value;
     }
 }
-

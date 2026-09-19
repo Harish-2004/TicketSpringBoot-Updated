@@ -41,6 +41,7 @@
 <body>
     <div class="booking-container">
         <h2>Ticket Booking</h2>
+        <div th:if="${message}" style="color: green; font-weight: bold; margin-bottom: 15px; text-align: center;" th:text="${message}"></div>
         <form action="/booking" method="post">
             <label for="emailval">Email Id:</label>
             <input type="email" id="emailval" name="emailval" required>

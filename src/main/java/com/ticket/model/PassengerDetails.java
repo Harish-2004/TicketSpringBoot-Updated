@@ -1,4 +1,4 @@
-package com.example.demoWeb.model;
+package com.ticket.model;
 
 import org.springframework.stereotype.Component;
 import jakarta.persistence.Entity;
@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 @Component
 @Entity
 @Table(name = "passengerbooking")
-public class Passengerdetails {
+public class PassengerDetails {
 
     @Id
     private String email;  // email as primary key
@@ -16,10 +16,10 @@ public class Passengerdetails {
     private String starting;
     private String destination;
 
-    public Passengerdetails() {
+    public PassengerDetails() {
     }
 
-    public Passengerdetails(String email, String name, String starting, String destination) {
+    public PassengerDetails(String email, String name, String starting, String destination) {
         this.email = email;
         this.name = name;
         this.starting = starting;
@@ -60,7 +60,7 @@ public class Passengerdetails {
 
     @Override
     public String toString() {
-        return "Passengerdetails{" +
+        return "PassengerDetails{" +
                 "email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", starting='" + starting + '\'' +

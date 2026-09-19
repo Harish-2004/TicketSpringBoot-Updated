@@ -1,37 +1,46 @@
-package com.example.demoWeb.Controller;
- import java.util.List;
+package com.ticket.controller;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demoWeb.Services.TicketService;
-import com.example.demoWeb.model.Passengerdetails;
-import com.example.demoWeb.model.StationAssign;
+import com.ticket.dto.TicketBookingEvent;
+import com.ticket.service.BookingProducerService;
+import com.ticket.service.TicketService;
+import com.ticket.model.StationAssign;
 
-import org.springframework.ui.Model;
 @Controller
 public class HomeController {
+
     @Autowired
     private TicketService ticketService;
-    @GetMapping("/booking")
-    public String home(Model model) {
-       List<StationAssign> assignments = ticketService.getStationAssignments();
-    System.out.println("Station Assignments: " + assignments);
-      model.addAttribute("stations", assignments);
-        return "booking";
 
+    @Autowired
+    private BookingProducerService bookingProducerService;
+
+    @GetMapping("/booking")
+    public String home(@RequestParam(required = false) String status, Model model) {
+        List<StationAssign> assignments = ticketService.getStationAssignments();
+        model.addAttribute("stations", assignments);
+        if ("queued".equals(status)) {
+            model.addAttribute("message", "Ticket booking request submitted asynchronously via Kafka!");
+        }
+        return "booking";
     }
+
     @PostMapping("/booking")
     public String handleBooking(@RequestParam String emailval, @RequestParam String name, @RequestParam String starting, @RequestParam String destination) {
-      Passengerdetails pd = new Passengerdetails(emailval,name, starting, destination);
-        //ticketService.addPassenger(passengerdetails);  
-      ticketService.bookTicket(pd);
-        return "redirect:/booking";
+        TicketBookingEvent event = new TicketBookingEvent(emailval, name, starting, destination);
+        bookingProducerService.sendBookingEvent(event);
+        return "redirect:/booking?status=queued";
     }
+
     @RequestMapping("/")
     public String showLoginPage() {
         return "login";
@@ -39,15 +48,12 @@ public class HomeController {
 
     @PostMapping("/")
     public String handleLogin(@RequestParam String email, @RequestParam String password, Model model) {
-       System.out.println("Email: " + email);
-        System.out.println("Password: " + password);
         boolean success = ticketService.login(email, password);
         if (success) {
-            return "redirect:/booking"; // Redirect to booking page after successful login
+            return "redirect:/booking";
         } else {
-            System.out.println("Invalid email or password");
             model.addAttribute("error", "Invalid email or password");
-            return "login"; // Show login page with error message
+            return "login";
         }
     }
 
@@ -61,5 +67,4 @@ public class HomeController {
         ticketService.signup(name, email, password);
         return "redirect:/"; 
     }
-  
 }

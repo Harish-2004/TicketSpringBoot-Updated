@@ -1,4 +1,4 @@
-package com.example.demoWeb;
+package com.ticket;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ public class CloudDatabaseConnectionTest {
     @Test
     public void testDatabaseConnection() {
         try {
-            // Try to execute a simple query
             Integer result = jdbcTemplate.queryForObject("SELECT 1", Integer.class);
             assertTrue(result == 1, "Database connection successful");
             System.out.println("Successfully connected to cloud database!");
@@ -27,4 +26,4 @@ public class CloudDatabaseConnectionTest {
             throw e;
         }
     }
-} 
+}
